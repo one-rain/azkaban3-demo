@@ -1,0 +1,58 @@
+---
+config:
+  param.day: 2022-10-01
+
+
+nodes:
+  - name: start
+    type: command
+    config: 
+      command: echo ${param.day} "start execute project demo1."
+
+  - name: embedded_flow_db_to_hdfs
+    type: flow
+    config:
+      param.flow.test: flow_test
+    dependsOn:
+      - start
+    nodes:
+      - name: mysql_to_hdfs
+        type: command
+        config:
+          command: bash +x /opt/apps/azkaban/test/mysql_to_hdfs.sh ${param.day}
+        
+      - name: oracle_to_hdfs
+        type: command
+        config:
+          command: echo "start execute oracle_to_hdfs"
+  
+      - name: check_db_to_hdfs
+        type: command
+        config:
+          command: echo "start execute check_db_to_hdfs"
+        dependsOn:
+          - mysql_to_hdfs
+          - oracle_to_hdfs
+
+  - name: check_use_log
+    type: command
+    config:
+      command: echo "start execute check_use_log"
+    dependsOn:
+      - start
+  
+  - name: hive_sql
+    type: command
+    config:
+      command: echo "start execute hive_sql"
+    dependsOn:
+      - embedded_flow_db_to_hdfs
+      - check_use_log
+
+  - name: hive_to_bi
+    type: command
+    config:
+      command: echo "start execute hive_to_bi"
+    dependsOn:
+      - hive_sql
+ 

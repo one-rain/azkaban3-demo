@@ -7,7 +7,7 @@ nodes:
   - name: start
     type: command
     config: 
-      command: echo ${param.day} "start execute project demo1." ${param.web.test}
+      command: echo ${param.day} "start execute project demo1."${param.web.test}
 
   - name: embedded_flow_db_to_hdfs
     type: flow
@@ -29,7 +29,7 @@ nodes:
       - name: check_db_to_hdfs
         type: command
         config:
-          command: echo "start execute check_db_to_hdfs, get param from mysql_to_hdfs, mysql_to_hdfs return code: " ${code}
+          command: echo "start execute check_db_to_hdfs, get param from mysql_to_hdfs, mysql_to_hdfs return code: "
         dependsOn:
           - mysql_to_hdfs
           - oracle_to_hdfs

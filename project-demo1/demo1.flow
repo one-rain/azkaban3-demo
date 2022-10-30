@@ -7,7 +7,7 @@ nodes:
   - name: start
     type: command
     config: 
-      command: echo ${param.day} "start execute project demo1."${param.web.test}
+      command: echo ${param.day} "start execute project demo1." ${param.web.test}
 
   - name: embedded_flow_db_to_hdfs
     type: flow
@@ -29,7 +29,7 @@ nodes:
       - name: check_db_to_hdfs
         type: command
         config:
-          command: echo "start execute check_db_to_hdfs, get param from mysql_to_hdfs, mysql_to_hdfs return code: "
+          command: echo 'start execute check_db_to_hdfs, get param from mysql_to_hdfs, mysql_to_hdfs return code:' ${code}'.'
         dependsOn:
           - mysql_to_hdfs
           - oracle_to_hdfs
@@ -45,6 +45,7 @@ nodes:
     type: command
     config:
       command: echo "start execute hive_sql"
+      command: bash +x /opt/apps/azkaban/test/hive_sql.sh ${param.day}
     dependsOn:
       - embedded_flow_db_to_hdfs
       - check_use_log
@@ -52,7 +53,7 @@ nodes:
   - name: hive_to_bi
     type: command
     config:
-      command: echo "start execute hive_to_bi"
+      command: echo 'start execute hive_to_bi, code:' ${code}
     dependsOn:
       - hive_sql
  

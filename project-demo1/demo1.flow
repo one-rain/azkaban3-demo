@@ -45,7 +45,7 @@ nodes:
     type: command
     config:
       command: echo "start execute hive_sql"
-      command: bash +x /opt/apps/azkaban/test/hive_sql.sh ${param.day}
+      command1: bash +x /opt/apps/azkaban/test/hive_sql.sh ${param.day}
     dependsOn:
       - embedded_flow_db_to_hdfs
       - check_use_log

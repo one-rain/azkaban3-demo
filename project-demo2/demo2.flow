@@ -1,0 +1,88 @@
+---
+  
+nodes:
+  - name: start
+    type: command
+    config:
+      command: echo ${param.day} "start execute project demo2." ${param.web.test}
+
+  - name: flow_etl
+    type: flow
+    config:
+      param.flow.test: flow_test
+    dependsOn: 
+      - start
+    nodes:
+      - name: ods_app_log_hh
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/ods_app_log_hh.hql'
+      
+      - name: ods_h5_log_hh
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/ods_h5_log_hh.hql'
+      
+      - name: ods_pc_log_hh
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/ods_pc_log_hh.hql'
+      
+      - name: ods_match_info_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/ods_match_info_dd.hql'
+      
+      - name: dwd_app_event_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/dwd_app_event_hh.hql'
+        dependsOn:
+          - ods_app_log_hh
+      
+      - name: dwd_pc_event_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/dwd_pc_event_hh.hql'
+        dependsOn:
+          - ods_pc_log_hh
+
+      - name: dwd_h5_event_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/dwd_h5_event_hh.hql'
+        dependsOn:
+          - ods_h5_log_hh
+
+      - name: dwd_match_info_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/dwd_match_info_dd.hql'
+        dependsOn:
+          - ods_match_info_dd
+        
+      - name: dwm_device_info_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/dwd_device_info_dd.hql'
+        dependsOn:
+          - dwd_app_event_dd
+          - dwd_h5_event_dd
+          - dwd_pc_event_dd
+      
+      - name: dwm_play_info_dd
+        type: command
+        config:
+          command: echo 'beeline -u jdbc:hive2://127.0.0.1:10000/default -n hadoop --hivevar day=2022-10-31 -f /path/dwd_xinai_pc_event_hh.hql'
+        dependsOn:
+          - dwd_app_event_dd
+          - dwd_h5_event_dd
+          - dwd_pc_event_dd
+          - dwd_match_info_dd
+
+  - name: end
+    type: command
+    config:
+      command: echo 'end execute'
+    dependsOn:
+      - flow_etl

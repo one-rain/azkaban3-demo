@@ -8,7 +8,12 @@ source "${DIR_ROOT}"/bin/common.sh
 
 function zip_project() {
   project_name="$1"
-  if cd "${DIR_ROOT}" && tar -zcvf "${project_name}".zip ./target/"${project_name}"; then
+  cd "${DIR_ROOT}" || exit
+  if [ -f ./target/"${project_name}".zip ]; then
+    rm -rf ./target/"${project_name}".zip
+  fi
+
+  if zip -r ./target/"${project_name}".zip ./"${project_name}"; then
     info "success zip ${project_name}"
   else
     msg="zip ${project_name} failed."
